@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Produtos</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #d8ccf6;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #34495e;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .product-list {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            color: #2c3e50;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .delete-btn {
+            background-color: #e74c3c;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cadastro de Produtos</h1>
+    
+    <div class="form-container">
+        <form id="productForm">
+            <div class="form-group">
+                <label for="productName">Nome do Produto*</label>
+                <input type="text" id="productName" required>
+                <div id="nameError" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="productPrice">Preço*</label>
+                <input type="number" id="productPrice" min="0" step="0.01" required>
+                <div id="priceError" class="error"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="productCategory">Categoria</label>
+                <select id="productCategory">
+                    <option value="">Selecione...</option>
+                    <option value="eletronicos">Eletrônicos</option>
+                    <option value="vestuario">Vestuário</option>
+                    <option value="alimentos">Alimentos</option>
+                    <option value="moveis">Móveis</option>
+                    <option value="outros">Outros</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="productDescription">Descrição</label>
+                <input type="text" id="productDescription">
+            </div>
+            
+            <button type="submit">Cadastrar Produto</button>
+        </form>
+    </div>
+    
+    <div class="product-list">
+        <h2>Produtos Cadastrados</h2>
+        <table id="productTable">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Preço</th>
+                    <th>Categoria</th>
+                    <th>Descrição</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="productTableBody">
+                <!-- Produtos serão inseridos aqui via JavaScript -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const productForm = document.getElementById('productForm');
+            const productTableBody = document.getElementById('productTableBody');
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+            
+            // Função para renderizar a tabela de produtos
+            function renderProductTable() {
+                productTableBody.innerHTML = '';
+                
+                if (products.length === 0) {
+                    productTableBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Nenhum produto cadastrado</td></tr>';
+                    return;
+                }
+                
+                products.forEach((product, index) => {
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td>${product.name}</td>
+                        <td>R$ ${product.price.toFixed(2)}</td>
+                        <td>${formatCategory(product.category)}</td>
+                        <td>${product.description || '-'}</td>
+                        <td><button class="delete-btn" data-index="${index}">Excluir</button></td>
+                    `;
+                    
+                    productTableBody.appendChild(row);
+                });
+                
+                // Adiciona eventos aos botões de excluir
+                document.querySelectorAll('.delete-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        deleteProduct(index);
+                    });
+                });
+            }
+            
+            // Função para formatar a categoria para exibição
+            function formatCategory(category) {
+                if (!category) return '-';
+                
+                const categories = {
+                    'eletronicos': 'Eletrônicos',
+                    'vestuario': 'Vestuário',
+                    'alimentos': 'Alimentos',
+                    'moveis': 'Móveis',
+                    'outros': 'Outros'
+                };
+                
+                return categories[category] || category;
+            }
+            
+            // Função para adicionar um novo produto
+            function addProduct(product) {
+                products.push(product);
+                localStorage.setItem('products', JSON.stringify(products));
+                renderProductTable();
+            }
+            
+            // Função para excluir um produto
+            function deleteProduct(index) {
+                if (confirm('Tem certeza que deseja excluir este produto?')) {
+                    products.splice(index, 1);
+                    localStorage.setItem('products', JSON.stringify(products));
+                    renderProductTable();
+                }
+            }
+            
+            // Validação do formulário
+            function validateForm() {
+                let isValid = true;
+                const name = document.getElementById('productName').value.trim();
+                const price = document.getElementById('productPrice').value;
+                
+                // Validação do nome
+                if (name === '') {
+                    document.getElementById('nameError').textContent = 'Por favor, insira o nome do produto';
+                    isValid = false;
+                } else {
+                    document.getElementById('nameError').textContent = '';
+                }
+                
+                // Validação do preço
+                if (price === '' || parseFloat(price) <= 0) {
+                    document.getElementById('priceError').textContent = 'Por favor, insira um preço válido';
+                    isValid = false;
+                } else {
+                    document.getElementById('priceError').textContent = '';
+                }
+                
+                return isValid;
+            }
+            
+            // Evento de submit do formulário
+            productForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (validateForm()) {
+                    const newProduct = {
+                        name: document.getElementById('productName').value.trim(),
+                        price: parseFloat(document.getElementById('productPrice').value),
+                        category: document.getElementById('productCategory').value,
+                        description: document.getElementById('productDescription').value.trim()
+                    };
+                    
+                    addProduct(newProduct);
+                    productForm.reset();
+                }
+            });
+            
+            // Renderiza a tabela quando a página carrega
+            renderProductTable();
+        });
+    </script>
+</body>
+</html>
