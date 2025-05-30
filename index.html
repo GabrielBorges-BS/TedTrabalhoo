@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Loja Simples</title>
+  <link rel="stylesheet" href="style.css">
+  
+</head>
+<body>
+  <h1>Cadastros</h1>
+  
+  <form id="product-form">
+    <label for="name">Nome do Produto:</label>
+    <input type="text" id="name" required />
+    
+    <label for="price">Preço (R$):</label>
+    <input type="number" id="price" step="0.01" min="0" required />
+    
+    <button type="submit">Adicionar Produto</button>
+  </form>
+  
+  <div class="product-list" id="product-list">
+    <h2>Produtos Cadastrados</h2>
+    <!-- Produtos vão aparecer aqui -->
+  </div>
+  
+  <div class="dashboard" id="dashboard">
+    <h2>Dashboard</h2>
+    <p>Total de produtos cadastrados: <span id="total-products">0</span></p>
+  </div>
+
+  <script>
+    const form = document.getElementById('product-form');
+    const productList = document.getElementById('product-list');
+    const totalProductsSpan = document.getElementById('total-products');
+
+    let products = [];
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('name').value.trim();
+      const price = parseFloat(document.getElementById('price').value);
+
+      if(name && price >= 0) {
+        const product = { name, price };
+        products.push(product);
+        updateProductList();
+        updateDashboard();
+        form.reset();
+      }
+    });
+
+    function updateProductList() {
+      const listHtml = products.map((p, i) => 
+        `<div class="product-item">
+          <strong>${p.name}</strong> — R$ ${p.price.toFixed(2)}
+        </div>`).join('');
+      productList.innerHTML = `<h2>Produtos Cadastrados</h2>${listHtml}`;
+    }
+
+    function updateDashboard() {
+      totalProductsSpan.textContent = products.length;
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #f0f0f5;
+  margin: 0;
+  padding: 30px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 25px;
+  text-shadow: 1px 1px 4px rgba(0,0,0,0.3);
+}
+
+form {
+  background: #ffffff20; /* branco com transparência */
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  width: 100%;
+  max-width: 400px;
+  color: #fff;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  text-shadow: 0 0 5px rgba(0,0,0,0.15);
+}
+
+input[type="text"],
+input[type="number"] {
+  margin-top: 8px;
+  padding: 12px 14px;
+  width: 100%;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  transition: box-shadow 0.3s ease;
+  color: #333;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  box-shadow: 0 0 8px 3px #76b3fc;
+}
+
+button {
+  margin-top: 25px;
+  width: 100%;
+  padding: 14px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  background: #6c63ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 4px 12px rgba(108, 99, 255, 0.6);
+}
+
+button:hover {
+  background-color: #574bcb;
+  box-shadow: 0 6px 16px rgba(87, 75, 203, 0.8);
+}
+
+.product-list {
+  background: #ffffff20;
+  padding: 20px 25px;
+  border-radius: 12px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.2);
+  width: 100%;
+  max-width: 400px;
+  margin-top: 30px;
+  color: #fff;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.product-item {
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding: 10px 0;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-shadow: 0 0 2px rgba(0,0,0,0.2);
+}
+
+.dashboard {
+  margin-top: 30px;
+  background: #ffffff20;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  width: 100%;
+  max-width: 400px;
+  color: #fff;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  font-weight: 700;
+  font-size: 1.3rem;
+  text-align: center;
+}
